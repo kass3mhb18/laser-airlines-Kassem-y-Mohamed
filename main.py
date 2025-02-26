@@ -134,7 +134,16 @@ def comprar_boleto():
     global total_boletos_vendidos  # Indica que usaremos la variable global
 
     limpiar_consola()
-    cantidad = int(input("Ingrese la cantidad de boletos a comprar: "))
+    while True:
+        try:
+            cantidad = int(input("Ingrese la cantidad de boletos a comprar: "))
+            if cantidad <= 0:
+                print("Debe comprar al menos un boleto.")
+                continue
+            break  # Si la cantidad es válida, salir del bucle
+        except ValueError:
+            print("Por favor, ingrese un número válido.")
+    
 
     if cantidad <= 0:
         print("Debe comprar al menos un boleto.")
@@ -145,9 +154,35 @@ def comprar_boleto():
 
     for i in range(cantidad):
         print(f"\nBoleto {i+1}:")
-        nombre = input("Nombre del pasajero: ")
-        cedula = input("Cédula de identidad (V/E): ")
-        edad = int(input("Edad del pasajero: "))
+
+
+        # Validación para que el nombre no esté vacío
+        while True:
+            nombre = input("Nombre del pasajero: ").strip()
+            if not nombre:
+                print("El nombre no puede estar vacío. Intente de nuevo.")
+            else:
+                break
+        
+        # Validación para que la cédula no esté vacía
+        while True:
+            cedula = input("Cédula de identidad (V/E): ").strip()
+            if not cedula:
+                print("La cédula no puede estar vacía. Intente de nuevo.")
+            else:
+                break
+
+        # Validación para que la edad no esté vacía y sea un número
+        while True:
+            try:
+                edad = int(input("Edad del pasajero: "))
+                if edad <= 0:
+                    print("La edad debe ser un número mayor a 0. Intente de nuevo.")
+                else:
+                    break
+            except ValueError:
+                print("La edad debe ser un número válido. Intente de nuevo.")
+
 
         if i == 0 and edad < 18:
             print("El primer boleto debe ser comprado por una persona mayor de edad (18+). Intente de nuevo.")
@@ -266,14 +301,6 @@ def comprar_boleto():
         
         print("Boleto registrado con éxito. Presiona Enter para continuar") 
         input("")
-
-
-
-
-
-
-
-
 
 
 
