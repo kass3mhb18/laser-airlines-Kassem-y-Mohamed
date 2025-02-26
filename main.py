@@ -20,49 +20,62 @@ def comprar_boleto():
 
         limpiar_consola()
         print("Seleccione la clase de boleto:")
-        print("1. Primera Clase")
-        print("2. Segunda Clase")
-        print("3. Tercera Clase")
+        print("Primera Clase")
+        print("Segunda Clase")
+        print("Tercera Clase")
         clase = input("Ingrese opción: ")
         
         limpiar_consola()
         print("Seleccione el tipo de boleto:")
-        print("N. Nacional")
-        print("I. Internacional")
+        print("Nacional")
+        print("Internacional")
         tipo_boleto = input("Ingrese opción (N/I): ")
         
         limpiar_consola()
-        if tipo_boleto.upper() == "N":
-            print("Seleccione el origen:")
-            print("1. Porlamar")
-            print("2. Puerto Ordaz")
-            print("3. Maracaibo")
-            print("4. El Vigia")
-            print("5. Barcelona")
-            print("6. La Fria")
-            origen = input("Ingrese número del origen: ")
+        if tipo_boleto.lower() == "n":
+            print("|========================== Vuelos Nacionales Disponibles ==============================|")
+            print("| Origen         | Destino         | Precio | Origen         | Destino         | Precio |")
+            print("|----------------|-----------------|--------|----------------|-----------------|--------|")
+            print("| Porlamar       | Caracas         |  50$   | Caracas        | Porlamar        |  50$   |")
+            print("| Puerto Ordaz   | Caracas         |  45$   | Caracas        | Puerto Ordaz    |  45$   |")
+            print("| Maracaibo      | Caracas         |  80$   | Caracas        | Maracaibo       |  80$   |")
+            print("| El Vigia       | Caracas         |  75$   | Caracas        | El Vigia        |  75$   |")
+            print("| Barcelona      | Caracas         |  30$   | Caracas        | Barcelona       |  30$   |")
+            print("| La Fria        | Caracas         |  60$   | Caracas        | La Fria         |  60$   |")
+            print("|=======================================================================================|")
             
-            print("Seleccione el destino:")
-            destino = input("Ingrese número del destino: ")
+            while True:
+                origen = input("Ingrese el origen: ")
+                destino = input("Ingrese el destino: ")
+                if origen != destino and origen in ["Porlamar", "Puerto Ordaz", "Maracaibo", "El Vigia", "Barcelona", "La Fria"] and destino == "Caracas":
+                    break
+                elif destino != origen and destino in ["Porlamar", "Puerto Ordaz", "Maracaibo", "El Vigia", "Barcelona", "La Fria"] and origen == "Caracas":
+                    break
+                else:
+                    print("Origen o destino inválido, o son iguales. Intente de nuevo.")
         else:
             limpiar_consola()
-            print("Seleccione el origen:")
-            print("1. Bogota")
-            print("2. Curazao")
-            print("3. Santo Domingo")
-            print("4. La Romana")
-            origen = input("Ingrese número del origen: ")
+            print("Vuelos internacionales disponibles:")
+            print("Bogota - Caracas")
+            print("Curazao - Caracas")
+            print("Santo Domingo - Caracas")
+            print("La Romana - Caracas")
             
-            print("Seleccione el destino:")
-            destino = input("Ingrese número del destino: ")
+            while True:
+                origen = input("Ingrese el origen: ")
+                destino = input("Ingrese el destino: ")
+                if origen != destino and origen in ["Bogota", "Curazao", "Santo Domingo", "La Romana"] and destino == "Caracas":
+                    break
+                elif destino != origen and destino in ["Bogota", "Curazao", "Santo Domingo", "La Romana"] and origen == "Caracas":
+                    break
+                else:
+                    print("Origen o destino inválido, o son iguales. Intente de nuevo.")
         
         limpiar_consola()
         servicios = input("¿Requiere servicios adicionales? (S/N): ")
         
-        print("Boleto registrado con éxito.")
-    
-    print("\nPresiona Enter para continuar...")
-    input("")
+        print("Boleto registrado con éxito. Presiona Enter para continuar") 
+        input("")
 
 def mostrar_menu():
     while True:
