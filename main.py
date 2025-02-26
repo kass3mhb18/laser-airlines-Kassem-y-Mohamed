@@ -55,11 +55,14 @@ def comprar_boleto():
                     print("Origen o destino inválido, o son iguales. Intente de nuevo.")
         else:
             limpiar_consola()
-            print("Vuelos internacionales disponibles:")
-            print("Bogota - Caracas")
-            print("Curazao - Caracas")
-            print("Santo Domingo - Caracas")
-            print("La Romana - Caracas")
+            print("|========================== Vuelos Internacionales Disponibles ==============================|")
+            print("| Origen          | Destino         | Precio  | Origen          | Destino         | Precio   |")
+            print("|-----------------|-----------------|---------|-----------------|-----------------|----------|")
+            print("| Bogota          | Caracas         |  499$   | Caracas         | Bogota          |  499$    |")
+            print("| Curazao         | Caracas         |  400$   | Caracas         | Curazao         |  400$    |")
+            print("| Santo Domingo   | Caracas         |  700$   | Caracas         | Santo Domingo   |  700$    |")
+            print("| La Romana       | Caracas         |  650$   | Caracas         | La Romana       |  650$    |")
+            print("|============================================================================================|")
             
             while True:
                 origen = input("Ingrese el origen: ")
