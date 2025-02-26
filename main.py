@@ -65,7 +65,7 @@ def calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta=False, 
 
     # Cargo adicional por servicios
     if servicios:
-        precio_total += 20  # Cargo fijo por servicios adicionales
+        precio_total += 20  
 
     return precio_total, precio_ida_y_vuelta, precio_base
 
@@ -73,6 +73,13 @@ def calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta=False, 
 def comprar_boleto():
     limpiar_consola()
     cantidad = int(input("Ingrese la cantidad de boletos a comprar: "))
+
+    if cantidad <= 0:
+        print("Debe comprar al menos un boleto.")
+        return
+    
+    boletos = []
+    mayor_de_edad_comprado = False  # Bandera para validar el primer comprador
     
     for i in range(cantidad):
         print(f"\nBoleto {i+1}:")
@@ -80,6 +87,13 @@ def comprar_boleto():
         cedula = input("Cédula de identidad (V/E): ")
         edad = int(input("Edad del pasajero: "))
 
+        if i == 0 and edad < 18:
+            print("El primer boleto debe ser comprado por una persona mayor de edad (18+). Intente de nuevo.")
+            return  # Detiene la compra si el primer pasajero no es mayor de edad
+
+        if edad >= 18:
+            mayor_de_edad_comprado = True  # Se marca que ya compró un adulto
+        
         limpiar_consola()
         print("Seleccione la clase de boleto:")
         print("1. Primera Clase (Cargo adicional de 50$)")
