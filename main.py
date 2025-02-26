@@ -212,11 +212,21 @@ def comprar_boleto():
             else:
                 break  
 
-        limpiar_consola()
-        print("Seleccione el tipo de boleto:")
-        print("Nacional")
-        print("Internacional")
-        tipo_boleto = input("Ingrese opción (N/I): ")
+        while True:
+            limpiar_consola()
+            print("Seleccione el tipo de boleto:")
+            print("Nacional")
+            print("Internacional")
+            tipo_boleto = input("Ingrese opción (N/I): ").lower()
+
+            if tipo_boleto == "n" or tipo_boleto == "i":
+                break  # Si la opción es válida, salir del bucle
+            else:
+                print("Opción no válida. Por favor, ingrese 'N' para Nacional o 'I' para Internacional.")
+                input("Presione Enter para continuar...")
+
+            
+        
         
         limpiar_consola()
         if tipo_boleto.lower() == "n":
