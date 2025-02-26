@@ -1,12 +1,72 @@
 import os
 import platform
 
+# Variables globales para el panel de control
+total_boletos_vendidos = 0
+ingresos_clase = {"1": 0, "2": 0, "3": 0}  # Ingresos por clase
+ingresos_tipo_boleto = {"n": 0, "i": 0}  # Ingresos por tipo de boleto
+ingresos_ruta = {}  # Ingresos por ruta de viaje
+servicios_adicionales = 0  # Número de servicios adicionales
+
+
 def limpiar_consola():
     sistema = platform.system()
     if sistema == 'Windows':
         os.system('cls')
     else:
         os.system('clear')
+
+def actualizar_panel_de_control(precio_total, clase, tipo_boleto, origen, destino, servicios):
+    global total_boletos_vendidos, ingresos_clase, ingresos_tipo_boleto, ingresos_ruta, servicios_adicionales
+
+    
+    # Actualizar ingresos por clase
+    ingresos_clase[clase] += precio_total
+
+    # Actualizar ingresos por tipo de boleto
+    ingresos_tipo_boleto[tipo_boleto] += precio_total
+
+    # Actualizar ingresos por ruta de viaje
+    ruta = f"{origen} -> {destino}"
+    if ruta not in ingresos_ruta:
+        ingresos_ruta[ruta] = 0
+    ingresos_ruta[ruta] += precio_total
+
+    # Si es ida y vuelta, sumar también la ruta de vuelta
+    if tipo_boleto.lower() == 'i':  # Si el boleto es internacional (ida y vuelta)
+        ruta_vuelta = f"{destino} -> {origen}"
+        if ruta_vuelta not in ingresos_ruta:
+            ingresos_ruta[ruta_vuelta] = 0
+        ingresos_ruta[ruta_vuelta] += precio_total
+
+    # Actualizar el número de servicios adicionales
+    if servicios:
+        servicios_adicionales += 1
+
+
+        
+
+def mostrar_panel_de_control():
+    limpiar_consola()
+    print("Panel de Control")
+    print(f"Total de boletos vendidos: {total_boletos_vendidos}")
+    print(f"\nTotal de ingresos por clase:")
+    print(f"Primera Clase: {ingresos_clase['1']:.2f} USD")
+    print(f"Segunda Clase: {ingresos_clase['2']:.2f} USD")
+    print(f"Tercera Clase: {ingresos_clase['3']:.2f} USD")
+
+    print(f"\nTotal de ingresos por tipo de boleto:")
+    print(f"Nacional: {ingresos_tipo_boleto['n']:.2f} USD")
+    print(f"Internacional: {ingresos_tipo_boleto['i']:.2f} USD")
+
+    print(f"\nDetalle de ingresos por ruta de viaje:")
+    for ruta, ingresos in ingresos_ruta.items():
+        print(f"{ruta}: {ingresos:.2f} USD")
+
+    print(f"\nNúmero de servicios adicionales solicitados: {servicios_adicionales}")
+
+    input("\nPresione Enter para regresar al menú principal...")
+
 
 def calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta=False, servicios=False):
     # Precios de boletos por vuelo (ida y vuelta)
@@ -71,6 +131,8 @@ def calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta=False, 
 
 
 def comprar_boleto():
+    global total_boletos_vendidos  # Indica que usaremos la variable global
+
     limpiar_consola()
     cantidad = int(input("Ingrese la cantidad de boletos a comprar: "))
 
@@ -79,8 +141,8 @@ def comprar_boleto():
         return
     
     boletos = []
-    mayor_de_edad_comprado = False  # Bandera para validar el primer comprador
-    
+    mayor_de_edad_comprado = False  
+
     for i in range(cantidad):
         print(f"\nBoleto {i+1}:")
         nombre = input("Nombre del pasajero: ")
@@ -89,12 +151,11 @@ def comprar_boleto():
 
         if i == 0 and edad < 18:
             print("El primer boleto debe ser comprado por una persona mayor de edad (18+). Intente de nuevo.")
-            return  # Detiene la compra si el primer pasajero no es mayor de edad
+            return  
 
         if edad >= 18:
-            mayor_de_edad_comprado = True  # Se marca que ya compró un adulto
-        
-        
+            mayor_de_edad_comprado = True  
+
         while True:
             limpiar_consola()
             print("Seleccione la clase de boleto:")
@@ -107,15 +168,15 @@ def comprar_boleto():
             if clase not in ["1", "2", "3"]:
                 print("Opción no válida. Intente de nuevo.")
                 input("Presione Enter para continuar...")
-                continue  # Regresa al inicio del bucle
+                continue  
 
             if clase == "3" and edad >= 60:
                 print("Los pasajeros mayores de 60 años no pueden comprar boletos de tercera clase. Seleccione otra clase.")
                 input("Presione Enter para continuar...")
-                continue  # Regresa al inicio del bucle
+                continue  
             else:
-                break  # Salir del bucle si la opción es válida y la condición se cumple
-        
+                break  
+
         limpiar_consola()
         print("Seleccione el tipo de boleto:")
         print("Nacional")
@@ -168,19 +229,21 @@ def comprar_boleto():
         limpiar_consola()
         servicios = input("¿Requiere servicios adicionales? (S/N): ").lower() == "s"
 
-        # Preguntar si es ida y vuelta
         es_vuelta = input("¿Desea boleto de vuelta? (S/N): ").lower() == "s"
-        
-        # Calcular el precio total, incluyendo descuento y si es vuelta
+
         precio_total, precio_ida_y_vuelta, precio_base = calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta, servicios)
         
-        # Ahora sumamos todo al final
+        if es_vuelta:
+            precio_total = precio_ida_y_vuelta
+            total_boletos_vendidos += 2  
+        else:
+            total_boletos_vendidos += 1  
+
         print(f"\nDetalles del pago para {nombre} ({cedula}):")
         print(f"Clase seleccionada: {'Primera' if clase == '1' else 'Segunda' if clase == '2' else 'Tercera'}")
         print(f"Precio de la clase: {'50$' if clase == '1' else '30$' if clase == '2' else '10$'}")
         print(f"Tipo de boleto: {'Ida y vuelta' if es_vuelta else 'Solo ida'}")
         
-        # Mostrar el precio de ida o ida y vuelta correctamente
         if es_vuelta:
             print(f"Precio de ida y vuelta (si aplica): {precio_ida_y_vuelta:.2f}$")
         else:
@@ -190,7 +253,8 @@ def comprar_boleto():
         print(f"Precio de servicios adicionales: {'20$' if servicios else '0$'}")
         print(f"Precio total del boleto: {precio_total:.2f} USD")
 
-        # Solicitar el pago
+        actualizar_panel_de_control(precio_total, clase, tipo_boleto, origen, destino, servicios)
+
         while True:
             pago = float(input(f"Debe abonar {precio_total:.2f} USD. Ingrese el monto a pagar: "))
             if pago >= precio_total:
@@ -202,6 +266,14 @@ def comprar_boleto():
         
         print("Boleto registrado con éxito. Presiona Enter para continuar") 
         input("")
+
+
+
+
+
+
+
+
 
 
 
@@ -221,8 +293,7 @@ def mostrar_menu():
         if opcion == "1":
             comprar_boleto()
         elif opcion == "2":
-            limpiar_consola()
-            print("Función ver panel de control aún no implementada.")
+            mostrar_panel_de_control()
         elif opcion == "3":
             print("Saliendo...")
             break
