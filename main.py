@@ -37,8 +37,8 @@ def calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta=False, 
             print("Origen o destino inválido para vuelos internacionales.")
             return 0
 
-    # Aplicar descuento para niños menores de 18 años y personas mayores de 60
-    if edad < 18 or edad > 60:
+    # Aplicar descuento para niños menores de 12 años y personas mayores de 60
+    if edad < 12 or edad > 60:
         descuento = 0.10  # 10% descuento
     else:
         descuento = 0.0
@@ -94,12 +94,27 @@ def comprar_boleto():
         if edad >= 18:
             mayor_de_edad_comprado = True  # Se marca que ya compró un adulto
         
-        limpiar_consola()
-        print("Seleccione la clase de boleto:")
-        print("1. Primera Clase (Cargo adicional de 50$)")
-        print("2. Segunda Clase (Cargo adicional de 30$)")
-        print("3. Tercera Clase (Cargo adicional de 10$)")
-        clase = input("Ingrese opción (1/2/3): ")
+        
+        while True:
+            limpiar_consola()
+            print("Seleccione la clase de boleto:")
+            print("1. Primera Clase (Cargo adicional de 50$)")
+            print("2. Segunda Clase (Cargo adicional de 30$)")
+            print("3. Tercera Clase (Cargo adicional de 10$)")
+
+            clase = input("Ingrese opción (1/2/3): ")
+
+            if clase not in ["1", "2", "3"]:
+                print("Opción no válida. Intente de nuevo.")
+                input("Presione Enter para continuar...")
+                continue  # Regresa al inicio del bucle
+
+            if clase == "3" and edad >= 60:
+                print("Los pasajeros mayores de 60 años no pueden comprar boletos de tercera clase. Seleccione otra clase.")
+                input("Presione Enter para continuar...")
+                continue  # Regresa al inicio del bucle
+            else:
+                break  # Salir del bucle si la opción es válida y la condición se cumple
         
         limpiar_consola()
         print("Seleccione el tipo de boleto:")
@@ -187,6 +202,7 @@ def comprar_boleto():
         
         print("Boleto registrado con éxito. Presiona Enter para continuar") 
         input("")
+
 
 
 def mostrar_menu():
