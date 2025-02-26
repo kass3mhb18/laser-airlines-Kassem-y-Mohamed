@@ -8,7 +8,7 @@ def limpiar_consola():
     else:
         os.system('clear')
 
-def calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta=False):
+def calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta=False, servicios=False):
     # Precios de boletos por vuelo (ida y vuelta)
     precios_nacionales = {
         "Porlamar": 50, "Puerto Ordaz": 45, "Maracaibo": 80,
@@ -43,13 +43,31 @@ def calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta=False):
     else:
         descuento = 0.0
 
-    # Si es boleto de ida y vuelta, multiplicamos el precio por 2
-    if es_vuelta:
-        precio_total = precio * 2 * (1 - descuento)
-    else:
-        precio_total = precio * (1 - descuento)
+    # Calcular el precio base con descuento
+    precio_base = precio * (1 - descuento)
 
-    return precio_total
+    # Si es boleto de ida y vuelta, multiplicamos el precio base por 2
+    if es_vuelta:
+        precio_ida_y_vuelta = precio_base * 2
+    else:
+        precio_ida_y_vuelta = precio_base
+
+    # Cargo adicional por la clase de boleto
+    if clase == "1":  # Primera Clase
+        precio_total = precio_ida_y_vuelta + 50
+    elif clase == "2":  # Segunda Clase
+        precio_total = precio_ida_y_vuelta + 30
+    elif clase == "3":  # Tercera Clase
+        precio_total = precio_ida_y_vuelta + 10
+    else:
+        print("Clase no válida. Se cobrará el precio base.")
+        precio_total = precio_ida_y_vuelta
+
+    # Cargo adicional por servicios
+    if servicios:
+        precio_total += 20  # Cargo fijo por servicios adicionales
+
+    return precio_total, precio_ida_y_vuelta, precio_base
 
 
 def comprar_boleto():
@@ -64,9 +82,9 @@ def comprar_boleto():
 
         limpiar_consola()
         print("Seleccione la clase de boleto:")
-        print("1. Primera Clase")
-        print("2. Segunda Clase")
-        print("3. Tercera Clase")
+        print("1. Primera Clase (Cargo adicional de 50$)")
+        print("2. Segunda Clase (Cargo adicional de 30$)")
+        print("3. Tercera Clase (Cargo adicional de 10$)")
         clase = input("Ingrese opción (1/2/3): ")
         
         limpiar_consola()
@@ -119,25 +137,39 @@ def comprar_boleto():
                     print("Origen o destino inválido, o son iguales. Intente de nuevo.")
         
         limpiar_consola()
-        servicios = input("¿Requiere servicios adicionales? (S/N): ")
+        servicios = input("¿Requiere servicios adicionales? (S/N): ").lower() == "s"
 
         # Preguntar si es ida y vuelta
         es_vuelta = input("¿Desea boleto de vuelta? (S/N): ").lower() == "s"
         
         # Calcular el precio total, incluyendo descuento y si es vuelta
-        precio = calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta)
+        precio_total, precio_ida_y_vuelta, precio_base = calcular_precio(edad, clase, tipo_boleto, origen, destino, es_vuelta, servicios)
         
-        print(f"Precio del boleto: {precio:.2f} USD")
+        # Ahora sumamos todo al final
+        print(f"\nDetalles del pago para {nombre} ({cedula}):")
+        print(f"Clase seleccionada: {'Primera' if clase == '1' else 'Segunda' if clase == '2' else 'Tercera'}")
+        print(f"Precio de la clase: {'50$' if clase == '1' else '30$' if clase == '2' else '10$'}")
+        print(f"Tipo de boleto: {'Ida y vuelta' if es_vuelta else 'Solo ida'}")
         
+        # Mostrar el precio de ida o ida y vuelta correctamente
+        if es_vuelta:
+            print(f"Precio de ida y vuelta (si aplica): {precio_ida_y_vuelta:.2f}$")
+        else:
+            print(f"Precio de solo ida: {precio_base:.2f}$")
+        
+        print(f"Servicios adicionales: {'Sí' if servicios else 'No'}")
+        print(f"Precio de servicios adicionales: {'20$' if servicios else '0$'}")
+        print(f"Precio total del boleto: {precio_total:.2f} USD")
+
         # Solicitar el pago
         while True:
-            pago = float(input(f"Debe abonar {precio:.2f} USD. Ingrese el monto a pagar: "))
-            if pago >= precio:
-                cambio = pago - precio
+            pago = float(input(f"Debe abonar {precio_total:.2f} USD. Ingrese el monto a pagar: "))
+            if pago >= precio_total:
+                cambio = pago - precio_total
                 print(f"Pago recibido: {pago} USD. Su cambio es: {cambio:.2f} USD.")
                 break
             else:
-                print(f"El monto ingresado es insuficiente. Debe abonar al menos {precio:.2f} USD.")
+                print(f"El monto ingresado es insuficiente. Debe abonar al menos {precio_total:.2f} USD.")
         
         print("Boleto registrado con éxito. Presiona Enter para continuar") 
         input("")
@@ -171,4 +203,5 @@ def mostrar_menu():
         input("")
 
 mostrar_menu()
+
 
